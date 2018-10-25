@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from celery import Celery
-from NASA2GmSH_geo import *
+from nasa2gmsh_geo import *
 
 #Broker = what?
 app = Celery('test_celery', broker = 'amqp://guest@localhost', backend = 'rpc://')
