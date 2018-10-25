@@ -1,0 +1,14 @@
+package_update: true
+package_upgrade: true
+
+packages:
+  - docker-ce
+  - python-pip
+  - rabbitmq-server
+  - redis-server
+
+apt:
+  sources:
+    curtin-dev-ppa.list:
+      source: "deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable"
+      keyid: 0EBFCD88
