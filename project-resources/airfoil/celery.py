@@ -11,6 +11,11 @@ void generate_mesh()
     return null
 
 @app.task
+void angle_aux()
+#Gmsh help function
+    return null
+
+@app.task
 void convert(var mesh)
 #Convert one file form gmsh to XML with Dolfin-xml
     return null
