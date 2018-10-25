@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from celery import Celery
 from nasa2gmsh_geo import *
 import numpy as np
+import os
 
 #Broker = what?
 app = Celery('test_celery', broker = 'amqp://guest@localhost', backend = 'rpc://')
@@ -23,8 +24,13 @@ def geofun(geofile, arg_n1, arg_n2, arg_n3, arg_n4, arg_angle, arg_nodes):
     return null
 
 @app.task
-def generate_mesh():
+def gmsh(msh, geo):
 #Call gmsh
+    #read = open(geo, 'r')
+    #write = open(msh, 'w')
+
+    os.system('/usr/bin/gmsh -v 0 -nopopup -2 -o msh geo')
+
     return null
 
 @app.task
