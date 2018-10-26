@@ -8,6 +8,7 @@ def main():
     n_angles = 10
 
     mesh_generate(angle_start, angle_stop, n_angles)
+    #msh_convert()
 
 def mesh_generate(angle_start, angle_stop, n_angles):
     # Path on GHSM
@@ -45,7 +46,7 @@ def mesh_generate(angle_start, angle_stop, n_angles):
         temp = filename.replace(".geo","")
         temp = "msh/r0"+temp
         geo_name = "geo/"+filename
-        os.system('bin/gmsh -v 0 -nopopup -2 -o '+temp+' '+geo_name)
+        os.system("bin/gmsh -v 0 -2 -o {} {}".format(temp, geo_name))
         
         
 def msh_convert():
