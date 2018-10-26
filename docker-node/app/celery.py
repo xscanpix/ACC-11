@@ -4,7 +4,7 @@ from nasa2gmsh_geo import *
 from mesh_generator import *
 import numpy as np
 
-#Broker = what?
+#Broker = what? Backend = Redis (later)
 app = Celery('test_celery', broker = 'amqp://guest@localhost', backend = 'rpc://')
 
 @app.task
@@ -23,19 +23,19 @@ def geofun(geofile, arg_n1, arg_n2, arg_n3, arg_n4, arg_angle, arg_nodes):
 
     return null
 
+#Call gmsh
 @app.task
 def generate_mesh(angle_start, angle_stop, n_angles):
-#Call gmsh
     mesh_generate(angle_start, angle_stop, n_angles)
     return null
 
+#Convert one file form gmsh to XML with Dolfin-xml
 @app.task
 def convert():
-#Convert one file form gmsh to XML with Dolfin-xml
     msh_convert()
     return null
 
+#Calculate the values
 @app.task
 def calculate(var xml):
-#Calculate the values
     return null
