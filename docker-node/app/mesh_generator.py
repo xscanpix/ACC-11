@@ -45,14 +45,13 @@ def mesh_generate(angle_start, angle_stop, n_angles):
         temp = filename.replace(".geo","")
         temp = "msh/r0"+temp
         geo_name = "geo/"+filename
-        os.system('/usr/bin/gmsh -v 0 -nopopup -2 -o '+temp+' '+geo_name)
+        os.system('bin/gmsh -v 0 -nopopup -2 -o '+temp+' '+geo_name)
         
         
 def msh_convert():
-    for filename in os.listdir('/home/fenics/shared/murtazo/cloudnaca/msh'):
+    for filename in os.listdir('msh'):
         temp = filename.replace(".msh",".XML")
-        #msh_convert.delay(filename, temp)
-        os.system('dolfin-convert '+filename+' '+temp)
+        os.system('bin/dolfin-convert '+filename+' '+temp)
     
 
 if __name__ == '__main__':
