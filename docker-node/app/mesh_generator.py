@@ -44,9 +44,9 @@ def mesh_generate(angle_start, angle_stop, n_angles):
     # Create Msh-files
     for filename in os.listdir('geo'):
         temp = filename.replace(".geo","")
-        temp = "msh/r0"+temp
+        temp = "msh/r0"+temp+".msh"
         geo_name = "geo/"+filename
-        os.system("bin/gmsh -v 0 -2 -o {} {}".format(temp, geo_name))
+        os.system("bin/gmsh -format auto -v 0 -2 -o {} {}".format(temp, geo_name))
         
         
 def msh_convert():
