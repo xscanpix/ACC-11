@@ -1,6 +1,6 @@
-
 import os
-
+import shutil
+import naca2gmsh_geo as naca
 
 def main():
     angle_start = 0
@@ -8,7 +8,6 @@ def main():
     n_angles = 10
 
     mesh_generate(angle_start, angle_stop, n_angles)
-
 
 def mesh_generate(angle_start, angle_stop, n_angles):
     # Path on GHSM
@@ -28,19 +27,24 @@ def mesh_generate(angle_start, angle_stop, n_angles):
     n_levels = 0
     anglediff = ((angle_stop-angle_start)/n_angles)
 
+    if os.path.exists(GEODIR):
+        shutil.rmtree(GEODIR)
+    if os.path.exists(MSHDIR):
+        shutil.rmtree(MSHDIR)
+    os.mkdir(GEODIR)
+    os.mkdir(MSHDIR)
+
     # Create Geo-files
     for i in  range(n_angles + 1):
         angle = angle_start + anglediff*i
-        geofile = "a{}n{}.geo".format(angle, n_nodes)
-        #geo_fun.delay(geofile, NACA1, NACA2, NACA3, NACA4, angle, n_nodes)
-        os.system('sudo python3 naca2gmsh_geo.py {} {} {} {} {} {} {} > geo/'.format(NACA1,NACA2,NACA3,NACA4,angle,n_nodes) + geofile)
+        geofile = "{}/a{}n{}.geo".format(GEODIR, angle, n_nodes)
+        naca.generate(NACA1, NACA2, NACA3, NACA4, angle, n_nodes, geofile)
 
     # Create Msh-files
-    for filename in os.listdir('/home/fenics/shared/murtazo/cloudnaca/geo'):
+    for filename in os.listdir('geo'):
         temp = filename.replace(".geo","")
         temp = "msh/r0"+temp
         geo_name = "geo/"+filename
-        #gmsh.delay(temp, geo_name)
         os.system('/usr/bin/gmsh -v 0 -nopopup -2 -o '+temp+' '+geo_name)
         
         
@@ -50,3 +54,6 @@ def msh_convert():
         #msh_convert.delay(filename, temp)
         os.system('dolfin-convert '+filename+' '+temp)
     
+
+if __name__ == '__main__':
+    main()

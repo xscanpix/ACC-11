@@ -88,22 +88,28 @@ def dat2gmsh(x,y,outfile):
     out.write("Line Loop(109000) = {105000,106000,107000,108000};\n")
     out.write("Plane Surface(110000) = {109000,"+str(ntot+1)+"};\n")
 
-###########################################################################
-# Main loop
-###########################################################################
-if len(sys.argv) != 8:
-  sys.exit("Usage: naca2gmsh_geo.py angle n_nodes outfile")
-n1 = float(sys.argv[1])
-n2 = float(sys.argv[2])
-n3 = float(sys.argv[3])
-n4 = float(sys.argv[4])
-angle = float(sys.argv[5])
-n_nodes = int(sys.argv[6])
-outfile = str(sys.argv[7])
 
-xs = np.linspace(0.0,1.0,n_nodes)
-x, y = naca4(n1,n2,n3,n4,xs)
-xa, ya = rot(x,y,angle)
-dat2gmsh(xa,ya,outfile)
-###########################################################################
+def generate(n1, n2, n3, n4, angle, n_nodes, outfile):
+    xs = np.linspace(0.0,1.0,n_nodes)
+    x, y = naca4(n1,n2,n3,n4,xs)
+    xa, ya = rot(x,y,angle)
+    dat2gmsh(xa,ya,outfile)
 
+def main():
+    if len(sys.argv) != 8:
+        sys.exit("Usage: naca2gmsh_geo.py angle n_nodes outfile")
+    n1 = float(sys.argv[1])
+    n2 = float(sys.argv[2])
+    n3 = float(sys.argv[3])
+    n4 = float(sys.argv[4])
+    angle = float(sys.argv[5])
+    n_nodes = int(sys.argv[6])
+    outfile = str(sys.argv[7])
+
+    xs = np.linspace(0.0,1.0,n_nodes)
+    x, y = naca4(n1,n2,n3,n4,xs)
+    xa, ya = rot(x,y,angle)
+    dat2gmsh(xa,ya,outfile)
+
+if __name__ == '__main__':
+    main()

@@ -1,2 +1,5 @@
 
 \.DS_Store
+*.geo
+docker-node/app/geo/
+*.pyc
