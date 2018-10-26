@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from celery import Celery
 from nasa2gmsh_geo import *
+from mesh_generator import *
 import numpy as np
 
 #Broker = what?
@@ -23,14 +24,9 @@ def geofun(geofile, arg_n1, arg_n2, arg_n3, arg_n4, arg_angle, arg_nodes):
     return null
 
 @app.task
-def generate_mesh(msh, geo):
+def generate_mesh(angle_start, angle_stop, n_angles):
 #Call gmsh
-    os.system('/usr/bin/gmsh -v 0 -nopopup -2 -o msh geo')
-    return null
-
-@app.task
-def angle_aux():
-#Gmsh help function
+    mesh_generate(angle_start, angle_stop, n_angles)
     return null
 
 @app.task
