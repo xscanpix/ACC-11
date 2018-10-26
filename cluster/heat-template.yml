@@ -104,5 +104,20 @@ resources:
       key_name: { get_param: key }
       networks: 
       - port: { get_resource: master_port }
-      user_data_format: RAW
-      user_data: { get_file: "cloudinit-master.yml" }
+      user_data_format: SOFTWARE_CONFIG
+
+# Configs
+  master_config:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: ungrouped
+      config: 
+        get_file: cloudinit-master.yml
+
+  master_deployment:
+    type: OS::Heat::SoftwareDeployment
+    properties:
+      config:
+        get_resource: master_config
+      server:
+        get_resource: master_server
