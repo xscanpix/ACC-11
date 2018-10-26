@@ -23,8 +23,9 @@ def geofun(geofile, arg_n1, arg_n2, arg_n3, arg_n4, arg_angle, arg_nodes):
     return null
 
 @app.task
-def generate_mesh():
+def generate_mesh(msh, geo):
 #Call gmsh
+    os.system('/usr/bin/gmsh -v 0 -nopopup -2 -o msh geo')
     return null
 
 @app.task
