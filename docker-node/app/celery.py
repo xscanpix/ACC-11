@@ -30,8 +30,9 @@ def generate_mesh(angle_start, angle_stop, n_angles):
     return null
 
 @app.task
-def convert(var mesh):
+def convert():
 #Convert one file form gmsh to XML with Dolfin-xml
+    msh_convert()
     return null
 
 @app.task
