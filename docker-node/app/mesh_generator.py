@@ -8,6 +8,7 @@ def main():
     n_angles = 10
 
     mesh_generate(angle_start, angle_stop, n_angles)
+    msh_convert()
 
 def mesh_generate(angle_start, angle_stop, n_angles):
     # Path on GHSM
@@ -43,15 +44,17 @@ def mesh_generate(angle_start, angle_stop, n_angles):
     # Create Msh-files
     for filename in os.listdir('geo'):
         temp = filename.replace(".geo","")
-        temp = "msh/r0"+temp
+        temp = "msh/r0"+temp+".msh"
         geo_name = "geo/"+filename
-        os.system('bin/gmsh -v 0 -nopopup -2 -o '+temp+' '+geo_name)
+        os.system("bin/gmsh -format auto -v 0 -2 -o {} {}".format(temp, geo_name))
         
         
 def msh_convert():
+    abspath = os.path.abspath('msh')
     for filename in os.listdir('msh'):
-        temp = filename.replace(".msh",".XML")
-        os.system('bin/dolfin-convert '+filename+' '+temp)
+
+        temp = filename.replace(".msh",".xml")
+        os.system('dolfin-convert '+ abspath + '/' + filename+' '+ abspath +'/' + temp)
     
 
 if __name__ == '__main__':
