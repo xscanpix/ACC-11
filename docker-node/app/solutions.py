@@ -1,14 +1,17 @@
-import os
+import os, sys
 
-SOLVERPATH = "./airfoil"
-MSHDIR = "./msh"
-XMLDIR = "./xml"
+SOLVERPATH = "bin/airfoil"
 
 def main():
+    if len(sys.argv) != 2:
+        sys.exit("Usage: solver.py filepath")
+    filepath = str(sys.argv[1])
+    solve(filepath)
+    
 
-def solve(filename):
-    abspath = os.path.abspath(XMLDIR)
-    for filename in os.listdir(XMLDIR):
-        solution_name = filename.replace("r0a","")
-        solution_name = filename.replace("n200.xml","")
-        os.system('./airfoil 10 0.001 10. 1 '+temp+' ' + solution_name):
+def solve(filepath):
+    os.system("{} 10 0.1 10 1 {}".format(SOLVERPATH, filepath))
+
+
+if __name__ == "__main__":
+    main()
