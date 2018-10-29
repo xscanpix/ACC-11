@@ -3,13 +3,13 @@ import shutil
 import naca2gmsh_geo as naca
 
 # Path on GHSM
-GMSHBIN = "/usr/bin/gmsh"
+GMSHBIN = "bin/gmsh"
 # Path to dir where geo files will be stored
 GEODIR = "geo"
 # Path to dir where msh files will be stored
 MSHDIR = "msh"
 XMLDIR = "xml"
-DOLFINCONVERTPATH = "/usr/bin/dolfin-convert"
+DOLFINCONVERTPATH = "bin/dolfin-convert"
 
 def main():
     if len(sys.argv) != 4:
