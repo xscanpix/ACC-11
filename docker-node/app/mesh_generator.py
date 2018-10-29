@@ -1,23 +1,27 @@
-import os
+import os, sys
 import shutil
 import naca2gmsh_geo as naca
 
+# Path on GHSM
+GMSHBIN = "/usr/bin/gmsh"
+# Path to dir where geo files will be stored
+GEODIR = "geo"
+# Path to dir where msh files will be stored
+MSHDIR = "msh"
+XMLDIR = "xml"
+DOLFINCONVERTPATH = "/usr/bin/dolfin-convert"
+
 def main():
-    angle_start = 0
-    angle_stop = 30
-    n_angles = 10
+    if len(sys.argv) != 4:
+        sys.exit("Usage: mesh_generator.py angle_start angle_stop n_angles")
+    angle_start = int(sys.argv[1])
+    angle_stop = int(sys.argv[2])
+    n_angles = int(sys.argv[3])
 
     mesh_generate(angle_start, angle_stop, n_angles)
     msh_convert()
 
 def mesh_generate(angle_start, angle_stop, n_angles):
-    # Path on GHSM
-    GMSHBIN = "/usr/bin/gmsh"
-    # Path to dir where geo files will be stored
-    GEODIR = "geo"
-    # Path to dir where msh files will be stored
-    MSHDIR = "msh"
-
     # Shape of airfoil
     NACA1 = 0
     NACA2 = 0
@@ -44,18 +48,23 @@ def mesh_generate(angle_start, angle_stop, n_angles):
     # Create Msh-files
     for filename in os.listdir('geo'):
         temp = filename.replace(".geo","")
-        temp = "msh/r0"+temp+".msh"
-        geo_name = "geo/"+filename
-        os.system("bin/gmsh -format auto -v 0 -2 -o {} {}".format(temp, geo_name))
+        temp = "{}/r0{}.msh".format(MSHDIR, temp)
+        geo_name = "{}/{}".format(GEODIR, filename)
+        os.system("{} -format auto -v 0 -2 -o {} {}".format(GMSHBIN, temp, geo_name))
         
         
 def msh_convert():
-    abspath = os.path.abspath('msh')
-    for filename in os.listdir('msh'):
+    if os.path.exists(XMLDIR):
+        shutil.rmtree(XMLDIR)
+    os.mkdir(XMLDIR)
 
-        temp = filename.replace(".msh",".xml")
-        os.system('dolfin-convert '+ abspath + '/' + filename+' '+ abspath +'/' + temp)
+    xmlabspath = os.path.abspath(XMLDIR)
+    mshabspath = os.path.abspath(MSHDIR)
     
+    for filename in os.listdir(MSHDIR):
+        temp = filename.replace(".msh",".xml")
+        os.system("{} {}/{} {}/{}".format(DOLFINCONVERTPATH, mshabspath, filename, xmlabspath, temp))
+
 
 if __name__ == '__main__':
     main()
