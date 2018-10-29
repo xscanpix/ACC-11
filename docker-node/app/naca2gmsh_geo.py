@@ -2,7 +2,7 @@
 ###########################################################################
 #
 # Name: naca2gmsh_geo.py
-# Argumenmts (6):
+# Argumenmts (7):
 #   naca1: first digit NACA four digit
 #   naca2: second digit NACA four digit
 #   naca3: third digit NACA four digit
