@@ -1,15 +1,5 @@
-import os, sys
-import shutil
+import os, sys, shutil, ntpath
 import naca2gmsh_geo as naca
-
-# Path on GHSM
-GMSHBIN = "bin/gmsh"
-# Path to dir where geo files will be stored
-GEODIR = "geo"
-# Path to dir where msh files will be stored
-MSHDIR = "msh"
-XMLDIR = "xml"
-DOLFINCONVERTPATH = "bin/dolfin-convert"
 
 def main():
     if len(sys.argv) != 4:
@@ -18,52 +8,51 @@ def main():
     angle_stop = int(sys.argv[2])
     n_angles = int(sys.argv[3])
 
-    mesh_generate(angle_start, angle_stop, n_angles)
-    msh_convert()
+    generate_meshes(angle_start, angle_stop, n_angles)
+    convert_all_msh_xml()
 
-def mesh_generate(angle_start, angle_stop, n_angles):
-    # Shape of airfoil
-    NACA1 = 0
-    NACA2 = 0
-    NACA3 = 1
-    NACA4 = 2
-
-    n_nodes = 200
-    n_levels = 0
+def generate_meshes(angle_start, angle_stop, n_angles, gmshbin="/usr/bin/gmsh", geodir="geo", mshdir="msh", naca1=0, naca2=0, naca3=1, naca4=2, n_nodes=200, n_levels=0):
     anglediff = ((angle_stop-angle_start)/n_angles)
 
-    if os.path.exists(GEODIR):
-        shutil.rmtree(GEODIR)
-    if os.path.exists(MSHDIR):
-        shutil.rmtree(MSHDIR)
-    os.mkdir(GEODIR)
-    os.mkdir(MSHDIR)
+    if os.path.exists(geodir):
+        shutil.rmtree(geodir)
+    if os.path.exists(mshdir):
+        shutil.rmtree(mshdir)
 
+    os.mkdir(geodir)
     # Create Geo-files
     for i in  range(n_angles + 1):
         angle = angle_start + anglediff*i
-        geofile = "{}/a{}n{}.geo".format(GEODIR, angle, n_nodes)
-        naca.generate(NACA1, NACA2, NACA3, NACA4, angle, n_nodes, geofile)
+        geofile = "{}/a{}n{}.geo".format(geodir, angle, n_nodes)
+        naca.generate(naca1, naca2, naca3, naca4, angle, n_nodes, geofile)
 
+    os.mkdir(mshdir)
     # Create Msh-files
     for filename in os.listdir('geo'):
         temp = filename.replace(".geo","")
-        temp = "{}/r0{}.msh".format(MSHDIR, temp)
-        geo_name = "{}/{}".format(GEODIR, filename)
-        os.system("{} -format auto -v 0 -2 -o {} {}".format(GMSHBIN, temp, geo_name))
-        
-        
-def msh_convert():
-    if os.path.exists(XMLDIR):
-        shutil.rmtree(XMLDIR)
-    os.mkdir(XMLDIR)
+        temp = "{}/r0{}.msh".format(mshdir, temp)
+        geo_name = "{}/{}".format(geodir, filename)
+        os.system("{} -format auto -v 0 -2 -o {} {}".format(gmshbin, temp, geo_name))
 
-    xmlabspath = os.path.abspath(XMLDIR)
-    mshabspath = os.path.abspath(MSHDIR)
+
+def convert_all_msh_xml(srcdir="msh", dstdir="xml", dolfinconvertpath="/usr/bin/dolfin-convert"):
+    if os.path.exists(dstdir):
+        shutil.rmtree(dstdir)
+    os.mkdir(dstdir)
     
-    for filename in os.listdir(MSHDIR):
-        temp = filename.replace(".msh",".xml")
-        os.system("{} {}/{} {}/{}".format(DOLFINCONVERTPATH, mshabspath, filename, xmlabspath, temp))
+    mshabspath = os.path.abspath(srcdir)
+    xmlabspath = os.path.abspath(dstdir)
+    
+    for filename in os.listdir(srcdir):
+        srcfilepath = "{}/{}".format(mshabspath, filename)
+        convert_one_msh_xml(srcfilepath, xmlabspath, dolfinconvertpath)
+
+
+def convert_one_msh_xml(filepath, dstdir, dolfinconvertpath):
+    absfilepath = os.path.abspath(filepath)
+    absdstdir = os.path.abspath(dstdir)
+    basename = ntpath.basename(filepath).replace(".msh", ".xml")
+    os.system("{} {} {}/{}".format(dolfinconvertpath, absfilepath, absdstdir, basename))
 
 
 if __name__ == '__main__':
