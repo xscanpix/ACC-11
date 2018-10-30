@@ -4,9 +4,10 @@
 /docker-node/app/geo/
 /docker-node/app/msh/
 /docker-node/app/xml/
-/docker-node/app/results/
+/docker-node/app/result/
 __pycache__
 /docker-node/app/*_results/
+
 
 *.pyc
 
