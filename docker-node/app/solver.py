@@ -12,9 +12,9 @@ def main():
 
 def result_exists(angle, n_nodes=200, resultdir="result"):
     if os.path.exists("{}/r0a{}n{}_results".format(resultdir, angle, n_nodes)):
-        return True
+        return os.path.abspath("{}/r0a{}n{}_results".format(resultdir, angle, n_nodes))
     else:
-        return False
+        return None
 
 
 def solve_all(srcdir="xml", dstdir="result", solverpath="bin/airfoil"):
