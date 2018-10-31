@@ -1,7 +1,8 @@
 from flask import Flask, request, render_template
 from celery import Celery
+import numpy as np
 
-import tasks
+from tasks import *
 
 app = Flask(__name__)
 app.config.from_object('settings')
@@ -12,10 +13,15 @@ celery.conf.update(app.config)
 @app.route('/app', methods=['GET', 'POST'])
 def start():    
     if request.method == 'POST':
-        start_angle = request.values.get("start_angle")
-        end_angle  = request.values.get("end_angle")
-        n_angles = request.values.get("n_angles")
+        start_angle = int(request.values.get("start_angle"))
+        end_angle  = int(request.values.get("end_angle"))
+        n_angles = int(request.values.get("n_angles"))
 
+        angles = np.linspace(start_angle, end_angle, n_angles)
+
+        res = solve_angles(angles)
+
+        print(res)
 
         return render_template("hold.html", start_angle = start_angle, end_angle = end_angle,
 				 n_angles = n_angles )
@@ -25,9 +31,9 @@ def start():
 
 @app.route('/test', methods=['GET'])
 def test():
-	res = tasks.solve_angle(0).delay()
+	res = solve_angle.delay(1)
 
-	return res
+	return "Test"
 
 
 if __name__ == '__main__':

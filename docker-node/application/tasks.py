@@ -1,3 +1,4 @@
+from celery import group
 import celery
 
 from airfoil.mesh_generator import *
