@@ -1,10 +1,11 @@
 
 \.DS_Store
 
-*.xml
-*.msh
-*.geo
-/docker-node/application/result/
+docker-node/application/geo
+docker-node/application/msh
+docker-node/application/xml
+docker-node/application/result
+
 __pycache__
 
 *.pyc
