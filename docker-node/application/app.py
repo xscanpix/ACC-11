@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 from celery import Celery
+from celery.result import AsyncResult
 import numpy as np
 
 from tasks import *
@@ -7,7 +8,7 @@ from tasks import *
 app = Flask(__name__)
 app.config.from_object('settings')
 
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], result_backend=app.config['CELERY_RESULT_BACKEND'])
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], result_backend='redis://localhost')
 celery.conf.update(app.config)
 
 @app.route('/app', methods=['GET', 'POST'])
@@ -23,17 +24,18 @@ def start():
 
         print(res)
 
-        return render_template("hold.html", start_angle = start_angle, end_angle = end_angle,
-				 n_angles = n_angles )
+        return render_template("hold.html", start_angle = start_angle, end_angle = end_angle, n_angles = n_angles)
 
     return render_template("home.html")
 
 
-@app.route('/test', methods=['GET'])
-def test():
-	res = solve_angle.delay(1)
+@app.route('/results/<task_id>', methods=['GET'])
+def get_results(task_id):
+    res = AsyncResult(task_id).result
 
-	return "Test"
+    print(res)
+
+    return res
 
 
 if __name__ == '__main__':

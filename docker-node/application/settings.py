@@ -2,4 +2,4 @@
 # Celery config
 # ============================================================================
 CELERY_BROKER_URL = 'amqp://'
-CELERY_RESULT_BACKEND = 'redis://'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
