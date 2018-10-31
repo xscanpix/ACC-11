@@ -1,5 +1,6 @@
 import os, sys, shutil, ntpath
-import naca2gmsh_geo as naca
+
+from airfoil.naca2gmsh_geo import *
 
 def main():
     if len(sys.argv) != 4:
@@ -30,7 +31,7 @@ def generate_geo(angle, dstdir="geo", naca1=0, naca2=0, naca3=1, naca4=2, n_node
     if os.path.exists("{}/{}".format(dstdir, geofilename)):
         return os.path.abspath("{}/{}".format(dstdir, geofilename))
 
-    naca.generate(naca1, naca2, naca3, naca4, angle, n_nodes, "{}/{}".format(dstdir, geofilename))
+    generate(naca1, naca2, naca3, naca4, angle, n_nodes, "{}/{}".format(dstdir, geofilename))
 
     return os.path.abspath("{}/{}".format(dstdir, geofilename))
 

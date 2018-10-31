@@ -18,8 +18,9 @@ def result_exists(angle, n_nodes=200, resultdir="result"):
 
 
 def solve_all(srcdir="xml", dstdir="result", solverpath="bin/airfoil"):
-    for filename in os.listdir(srcdir):
-        solve(os.path.abspath("{}/{}".format(srcdir, filename)), dstdir)
+    if os.path.exists(srcdir):
+        for filename in os.listdir(srcdir):
+            solve(os.path.abspath("{}/{}".format(srcdir, filename)), dstdir)
 
 
 def solve(filepath, dstdir="result", solverpath="bin/airfoil"):

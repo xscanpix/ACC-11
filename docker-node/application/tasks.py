@@ -1,7 +1,7 @@
 import celery
 
-import airfoil.mesh_generator as mesh
-import airfoil.solver as solve
+from airfoil.mesh_generator import *
+from airfoil.solver import *
 
 
 # Solve severalk angles at once, returning list of AsyncResult objects (with task_ids). [task_id, task_id, task_id, ...]
@@ -21,11 +21,11 @@ def solve_angles(self, angles=list()):
 # Task starting the solving of an angle, returning the task_id of the task.
 @celery.task(bind=True)
 def solve_angle(self, angle):
-    resultpath = solve.result_exists(angle)
+    resultpath = result_exists(angle)
 
     if resultpath == None: 
-        xmlpath = mesh.generate_mesh_for_angle(angle)
-        resultpath = solve.solve(xmlpath)
+        xmlpath = generate_mesh_for_angle(angle)
+        resultpath = solve(xmlpath)
 
     return resultpath
 

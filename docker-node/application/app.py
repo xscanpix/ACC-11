@@ -1,10 +1,13 @@
-#!flask/bin/python
-from flask import Flask, render_template, request
-import subprocess
-import sys
+from flask import Flask, request, render_template
+from celery import Celery
+
+import tasks
 
 app = Flask(__name__)
+app.config.from_object('settings')
 
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], result_backend=app.config['CELERY_RESULT_BACKEND'])
+celery.conf.update(app.config)
 
 @app.route('/app', methods=['GET', 'POST'])
 def start():    
@@ -20,7 +23,12 @@ def start():
     return render_template("home.html")
 
 
+@app.route('/test', methods=['GET'])
+def test():
+	res = tasks.solve_angle(0).delay()
+
+	return res
+
 
 if __name__ == '__main__':
-    
-    app.run(host='0.0.0.0',debug=True)
+    app.run(debug=True, host="0.0.0.0")
