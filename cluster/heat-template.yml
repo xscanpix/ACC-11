@@ -104,20 +104,29 @@ resources:
       key_name: { get_param: key }
       networks: 
       - port: { get_resource: master_port }
-      user_data_format: SOFTWARE_CONFIG
+      user_data_format: RAW
+      user_data: |
+        #cloud-config
+        package_update: true
+        package_upgrade: true
 
-# Configs
-  master_config:
-    type: OS::Heat::SoftwareConfig
-    properties:
-      group: ungrouped
-      config: 
-        get_file: cloudinit-master.yml
+        packages:
+          - docker-ce
+          - python3-pip
+          - rabbitmq-server
+          - redis-server
 
-  master_deployment:
-    type: OS::Heat::SoftwareDeployment
-    properties:
-      config:
-        get_resource: master_config
-      server:
-        get_resource: master_server
+        apt:
+          sources:
+            curtin-dev-ppa.list:
+              source: "deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable"
+              keyid: 0EBFCD88
+
+        runcmd:
+          - pip3 install --upgrade pip
+          - pip3 install flask
+          - pip3 install celery
+          - git clone https://github.com/xscanpix/ACC-11/
+          - cd ACC-11/docker-node/application 
+          - export FENICS_ID=$(docker run -td -v $(pwd):/home/fenics/shared -w /home/fenics/shared quay.io/fenicsproject/stable:current)
+
