@@ -1,6 +1,6 @@
 import os, sys, shutil, ntpath
 
-from naca2gmsh_geo import *
+from airfoil.naca2gmsh_geo import *
 
 from definitions import ROOT_DIR, GMSHBIN, DOLFINCONVERTBIN
 

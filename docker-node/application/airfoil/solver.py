@@ -26,11 +26,7 @@ def solve(filepath, dstdir="{}/result".format(ROOT_DIR), solverpath=AIRFOILBIN):
 
     os.mkdir("{}/{}".format(dstdir, resultsdirname))
 
-    print "Made it here"
-
     os.system("{} 10 0.9 10 1 {}".format(solverpath, filepath))
-
-    print os.path.abspath(".")
 
     copytree("results", "{}/{}".format(dstdir, resultsdirname))
 
