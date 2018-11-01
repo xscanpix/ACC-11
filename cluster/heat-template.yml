@@ -111,22 +111,29 @@ resources:
         package_upgrade: true
 
         packages:
+          - docker-ce
           - python-pip
           - rabbitmq-server
           - redis-server
-          - fenics
-          - gmsh
 
         apt:
           sources:
             curtin-dev-ppa.list:
               source: "deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable"
               keyid: 0EBFCD88
+
         runcmd:
           - git clone https://github.com/xscanpix/ACC-11/
+          - cd ACC-11/docker-node/application
+          - echo '{"mtu": 1450}' > /etc/docker/daemon.json
+          - systemctl restart docker.service
+          - export FENICS_ID=$(docker run -td -v $(pwd):/home/fenics/shared -w /home/fenics/shared quay.io/fenicsproject/stable:current)
+          - docker exec -t -i $FENICS_ID apt update
+          - docker exec -t -i $FENICS_ID apt upgrade -y
+          - docker exec -t -i $FENICS_ID apt install gmesh -y
+          - docker exec -t -i $FENICS_ID pip install celery
+          - docker exec -t -i $FENICS_ID pip install flask 
           - pip install --upgrade pip
           - pip install celery
           - pip install flask
-          - cd ACC-11/docker-node/application
-
-       
+          - python app.py &
