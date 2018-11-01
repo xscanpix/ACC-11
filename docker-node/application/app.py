@@ -4,6 +4,7 @@ from celery.result import AsyncResult
 import numpy as np
 
 from tasks import *
+from helpers import result_exists
 
 app = Flask(__name__)
 app.config.from_object('settings')
@@ -29,13 +30,22 @@ def start():
     return render_template("home.html")
 
 
-@app.route('/results/<task_id>', methods=['GET'])
+@app.route('/resultspath/task_id/<task_id>', methods=['GET'])
 def get_results(task_id):
     res = AsyncResult(task_id).result
 
     print(res)
 
     return res
+
+
+@app.route('/resultspath/angle/<int:angle>', methods=['GET'])
+def get_results_angle(angle):
+    path = result_exists(int(angle))
+
+    return str(path) + "\n"
+
+    
 
 
 if __name__ == '__main__':

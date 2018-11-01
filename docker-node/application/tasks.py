@@ -3,6 +3,7 @@ import celery
 
 from airfoil.mesh_generator import *
 from airfoil.solver import *
+from helpers import result_exists
 
 
 # Solve severalk angles at once, returning list of AsyncResult objects (with task_ids). [task_id, task_id, task_id, ...]
