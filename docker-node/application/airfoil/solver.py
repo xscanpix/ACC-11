@@ -1,6 +1,6 @@
 import os, sys, ntpath, shutil
 
-from definitions import ROOT_DIR
+from definitions import ROOT_DIR, GMSHBIN, AIRFOILBIN, DOLFINCONVERTBIN
 
 def result_exists(angle, n_nodes=200, resultdir="{}/result".format(ROOT_DIR)):
     if os.path.exists("{}/r0a{}n{}_results".format(resultdir, angle, n_nodes)):
@@ -9,13 +9,13 @@ def result_exists(angle, n_nodes=200, resultdir="{}/result".format(ROOT_DIR)):
         return None
 
 
-def solve_all(srcdir="{}/xml".format(ROOT_DIR), dstdir="{}/result".format(ROOT_DIR), solverpath="{}/airfoil/bin/airfoil".format(ROOT_DIR)):
+def solve_all(srcdir="{}/xml".format(ROOT_DIR), dstdir="{}/result".format(ROOT_DIR), solverpath=AIRFOILBIN):
     if os.path.exists(srcdir):
         for filename in os.listdir(srcdir):
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 solve(os.path.abspath("{}/{}".format(srcdir, filename)), dstdir)
 
 
-def solve(filepath, dstdir="{}/result".format(ROOT_DIR), solverpath="{}/airfoil/bin/airfoil".format(ROOT_DIR)):
+def solve(filepath, dstdir="{}/result".format(ROOT_DIR), solverpath=AIRFOILBIN):
     resultsdirname = ntpath.basename(filepath).replace(".xml", "") + "_results"
 
     if os.path.exists(dstdir):
@@ -25,7 +25,12 @@ def solve(filepath, dstdir="{}/result".format(ROOT_DIR), solverpath="{}/airfoil/
         os.mkdir(dstdir)                                                                                                                                                                                                                                                
 
     os.mkdir("{}/{}".format(dstdir, resultsdirname))
+
+    print "Made it here"
+
     os.system("{} 10 0.9 10 1 {}".format(solverpath, filepath))
+
+    print os.path.abspath(".")
 
     copytree("results", "{}/{}".format(dstdir, resultsdirname))
 

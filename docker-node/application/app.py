@@ -18,7 +18,7 @@ def start():
         end_angle  = int(request.values.get("end_angle"))
         n_angles = int(request.values.get("n_angles"))
 
-        angles = np.linspace(start_angle, end_angle, n_angles)
+        angles = np.linspace(start_angle, end_angle, n_angles, int)
 
         res = solve_angles(angles)
 
