@@ -1,8 +1,8 @@
 import os, sys, shutil, ntpath
 
-from airfoil.naca2gmsh_geo import *
+from naca2gmsh_geo import *
 
-from definitions import ROOT_DIR, GMSHBIN, DOLFINCONVERTBIN
+from ..definitions import ROOT_DIR, GMSHBIN, DOLFINCONVERTBIN
 
 def generate_mesh_for_angle(angle):
     geofile = generate_geo(int(angle))

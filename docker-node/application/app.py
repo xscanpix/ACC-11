@@ -43,9 +43,7 @@ def get_results(task_id):
 def get_results_angle(angle):
     path = result_exists(int(angle))
 
-    return str(path) + "\n"
-
-    
+    return str(path) + "\n"    
 
 
 if __name__ == '__main__':

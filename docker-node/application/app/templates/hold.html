@@ -81,6 +81,8 @@ button {
     Start angle:  {{ start_angle }} <br>
     End angle:  {{ end_angle }} <br>
     Number of angles: {{ n_angles }} </p>
-
+    {% for task in tasks %}
+    <div><p>Task {{task}} running</p></div>
+    {% endfor %}
   </form>
 </html>
