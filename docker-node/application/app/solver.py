@@ -1,8 +1,8 @@
 import os, sys, ntpath, shutil
 
-from ..definitions import ROOT_DIR, GMSHBIN, AIRFOILBIN, DOLFINCONVERTBIN
+from definitions import *
 
-from ..helpers import result_exists
+from helpers import *
 
 
 def solve_all(srcdir="{}/xml".format(ROOT_DIR), dstdir="{}/result".format(ROOT_DIR), solverpath=AIRFOILBIN):

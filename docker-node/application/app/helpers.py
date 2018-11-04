@@ -1,4 +1,5 @@
 import os
+
 from definitions import ROOT_DIR
 
 def result_exists(angle, n_nodes=200, resultdir="{}/result".format(ROOT_DIR)):

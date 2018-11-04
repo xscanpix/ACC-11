@@ -1,10 +1,10 @@
 
 \.DS_Store
 
-docker-node/application/geo
-docker-node/application/msh
-docker-node/application/xml
-docker-node/application/result
+docker-node/application/app/geo
+docker-node/application/app/msh
+docker-node/application/app/xml
+docker-node/application/app/result
 
 __pycache__
 
