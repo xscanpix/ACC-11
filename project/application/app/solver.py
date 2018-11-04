@@ -24,9 +24,8 @@ def solve(filepath, dstdir="{}/result".format(ROOT_DIR), solverpath=AIRFOILBIN):
 
     os.system("{} 10 0.9 10 1 {}".format(solverpath, filepath))
 
-    copytree("results", "{}/{}".format(dstdir, resultsdirname))
-
     if os.path.exists("results"):
+        copytree("results", "{}/{}".format(dstdir, resultsdirname))
         shutil.rmtree("results")
 
     return os.path.abspath("{}/{}".format(dstdir, resultsdirname))

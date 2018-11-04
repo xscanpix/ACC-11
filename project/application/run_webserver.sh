@@ -11,7 +11,3 @@ service redis-server restart
 
 cd ./app
 flask run --host=0.0.0.0 &
-
-
-#Test
-sh ./run_workernode.sh

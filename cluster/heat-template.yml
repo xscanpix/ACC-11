@@ -83,6 +83,9 @@ resources:
       network: { get_resource: private_network }
       security_groups:
       - { get_resource: acc-group11-sg-master }
+      fixed_ips:
+      - subnet_id: { get_resource: private_subnetwork }
+        ip_address: 10.10.10.1  
 
   workernode_port:
     type: OS::Neutron::Port
@@ -131,7 +134,7 @@ resources:
 
         runcmd:
           - git clone https://github.com/xscanpix/ACC-11/
-          - cd ACC-11/docker-node/application/app
+          - cd ACC-11/project/application/app
           - echo '{"mtu": 1450}' > /etc/docker/daemon.json
           - systemctl restart docker.service
           - pip install --upgrade pip
@@ -152,7 +155,7 @@ resources:
       user_data: |
         #cloud-config
         package_update: true
-        package_upgrade: true
+        package_upgrade: false
 
         packages:
           - docker-ce
@@ -165,7 +168,7 @@ resources:
 
         runcmd:
           - git clone https://github.com/xscanpix/ACC-11/
-          - cd ACC-11/docker-node/application
+          - cd ACC-11/project/application/app
           - echo '{"mtu": 1450}' > /etc/docker/daemon.json
           - systemctl restart docker.service
-          - sh run_webserver.sh
+          - sh ./../run_workernode.sh
