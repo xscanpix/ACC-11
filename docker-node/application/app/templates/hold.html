@@ -73,16 +73,6 @@ button {
 }
     </style>  
   </head>
-  <form action="" method="POST" role ="form" >
-    <h1> The simulation is running...</h1>	
-    <p> This simulation is going to take a while, so take a seat and relax.<strong> The site will refresh when the simulation is done.</strong> </p>  
-    <p> The simulation will run with the following values: </p>
-    <p>
-    Start angle:  {{ start_angle }} <br>
-    End angle:  {{ end_angle }} <br>
-    Number of angles: {{ n_angles }} </p>
-    {% for task in tasks %}
-    <div><p>Task {{task}} running</p></div>
-    {% endfor %}
-  </form>
+
+  
 </html>

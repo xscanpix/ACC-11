@@ -8,5 +8,6 @@ docker-node/application/app/result
 
 __pycache__
 
+*.rdb
 *.pyc
 

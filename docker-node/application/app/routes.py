@@ -1,18 +1,14 @@
 from flask import render_template, request, jsonify
 import numpy as np
-from app import app
 
-from app import celery
+from webserver import app, celery
 
 from helpers import result_exists
+import tasks
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def index():
-    return "Hello, World!"
-
-@app.route('/app', methods=['GET', 'POST'])
-def start():
     if request.method == 'POST':
         start_angle = int(request.values.get("start_angle"))
         end_angle  = int(request.values.get("end_angle"))
@@ -22,7 +18,9 @@ def start():
 
         res = celery.send_task('tasks.solve_angles', [list(angles)])
 
-        return render_template("hold.html", start_angle = start_angle, end_angle = end_angle, n_angles = n_angles, tasks={})
+        print(celery.AsyncResult(res.task_id))
+
+        return render_template("home.html", start_angle = start_angle, end_angle = end_angle, n_angles = n_angles, tasks=[celery.AsyncResult(res.task_id).task_id])
 
     return render_template("home.html")
 

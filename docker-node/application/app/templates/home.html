@@ -61,23 +61,37 @@
       }
     </style>  
   </head>
-  <form action="" method="POST" role ="form" >
+  <form id= action="" method="POST" role ="form" >
     <h1> Run simulations to find the best angle</h1>	
     <p> This simulation is going to produce a graph that describe the relation between the lift force and the angle. In the first field, enter your preferred start angle. In the second field, enter your end angle, and in the the third field, enter how many angles you wish to have in the interval. </p>  
     <div>
       <label for="name">Start angle:</label>
-      <input type="number" id="start_angle" name="start_angle">
+      <input type="number" id="start_angle" name="start_angle" value={{ start_angle }}>
     </div>
     <div>
       <label for="name">End angle:</label>
-      <input type="number" id="end_angle" name="end_angle">
+      <input type="number" id="end_angle" name="end_angle" value={{ end_angle }}>
     </div>
     <div>
       <label for="name">Number of angles:</label>
-      <input type="number" id="n_angles" name="n_angles">
+      <input type="number" id="n_angles" name="n_angles" value={{ n_angles }}>
     </div>
     <div class="button">
      <button type="submit">Run</button>
    </div>
+  </form>
+  {% if tasks %}
+  <form action="" method="POST" role ="form" >
+  <h1> The simulation is running...</h1>  
+  <p> This simulation is going to take a while, so take a seat and relax.<strong> The site will refresh when the simulation is done.</strong> </p>  
+  <p> The simulation will run with the following values: </p>
+  <p>
+  Start angle:  {{ start_angle }} <br>
+  End angle:  {{ end_angle }} <br>
+  Number of angles: {{ n_angles }} </p>
+  {% for task in tasks %}
+  <div><p>Task {{task}} running</p></div>
+  {% endfor %}
+  {% endif %}
   </form>
 </html>

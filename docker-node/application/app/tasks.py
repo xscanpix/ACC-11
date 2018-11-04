@@ -1,12 +1,13 @@
-from celery import group
-import celery
+from celery import group, shared_task
 
 from mesh_generator import *
 from solver import *
 from helpers import *
 
+from webserver import celery
+
 # Solve severalk angles at once, returning list of AsyncResult objects (with task_ids). [task_id, task_id, task_id, ...]
-@celery.task(bind=True)
+@shared_task(bind=True)
 def solve_angles(self, angles):
 
     result = group(solve_angle.s(angle) for angle in angles).delay()
@@ -19,7 +20,7 @@ def solve_angles(self, angles):
     return task_ids
 
 # Task starting the solving of an angle, returning the task_id of the task.
-@celery.task(bind=True)
+@shared_task(bind=True)
 def solve_angle(self, angle):
     resultpath = result_exists(angle)
 
