@@ -69,7 +69,6 @@ resources:
     properties:
       external_gateway_info:
         network: { get_param: public_network }
-
   router_interface:
     type: OS::Neutron::RouterInterface
     properties:
@@ -84,13 +83,13 @@ resources:
       security_groups:
       - { get_resource: acc-group11-sg-master }
       fixed_ips:
-      - subnet_id: { get_resource: private_subnetwork }
-        ip_address: 10.10.10.1  
+      - subnet: { get_resource: private_subnetwork }
+        ip_address: 10.10.10.15
 
-  workernode_port:
+  worker_port:
     type: OS::Neutron::Port
     properties:
-      network: { get_resource: private_subnetwork }
+      network: { get_resource: private_network }
       security_groups:
       - { get_resource: acc-group11-sg-master }
 
@@ -132,16 +131,29 @@ resources:
               source: "deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable"
               keyid: 0EBFCD88
 
+        write_files:
+          - content: |
+              #!/bin/sh
+              # Configure rabbitmq
+              rabbitmqctl add_user rabbit rabbit
+              rabbitmqctl set_permissions -p / rabbit ".*" ".*" ".*"
+              rabbitmqctl set_user_tags rabbit administrator
+              # Configure redis
+              cat ./ACC-11/project/application/app/config/redis.conf > /etc/redis/redis.conf
+              service redis-server restart
+              # Setup project
+              git clone https://github.com/xscanpix/ACC-11.git
+              cd ./ACC-11/project/application/app
+              flask run --host=0.0.0.0 &
+            path: /home/ubuntu/run_webserver.sh
+
         runcmd:
-          - git clone https://github.com/xscanpix/ACC-11/
-          - cd ACC-11/project/application/app
           - echo '{"mtu": 1450}' > /etc/docker/daemon.json
           - systemctl restart docker.service
           - pip install --upgrade pip
           - pip install celery
           - pip install flask
-          - cd ..
-          - sh run_webserver.sh
+          - sh /home/ubuntu/run_webserver.sh
 
   workernode_server:
     type: OS::Nova::Server
@@ -150,7 +162,7 @@ resources:
       flavor: { get_param: flavor }
       key_name: { get_param: key }
       networks: 
-      - port: { get_resource: workernode_port }
+      - port: { get_resource: worker_port }
       user_data_format: RAW
       user_data: |
         #cloud-config
@@ -166,9 +178,22 @@ resources:
               source: "deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable"
               keyid: 0EBFCD88
 
+        write_files:
+        - content: |
+            #!/bin/sh
+            git clone https://github.com/xscanpix/ACC-11.git
+            cd ~/ACC-11/project/application/app
+            export FENICS_ID=$(docker run -td -v $(pwd):/home/fenics/shared -w /home/fenics/shared quay.io/fenicsproject/stable:current)
+            docker exec -t -i $FENICS_ID apt update
+            docker exec -t -i $FENICS_ID apt install gmsh -y
+            docker exec -t -i $FENICS_ID apt install libdolfin2017.2 -y
+            docker exec -t -i $FENICS_ID pip install celery
+            docker exec -t -i $FENICS_ID pip install flask
+            docker exec -t -i $FENICS_ID pip install redis
+            docker exec -t -i $FENICS_ID celery worker -A tasks.celery
+          path: /home/ubuntu/run_workernode.sh
+
         runcmd:
-          - git clone https://github.com/xscanpix/ACC-11/
-          - cd ACC-11/project/application/app
           - echo '{"mtu": 1450}' > /etc/docker/daemon.json
           - systemctl restart docker.service
-          - sh ./../run_workernode.sh
+          - sh /home/ubuntu/run_workernode.sh
