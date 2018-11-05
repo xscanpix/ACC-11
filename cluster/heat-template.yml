@@ -124,6 +124,7 @@ resources:
           - python-pip
           - rabbitmq-server
           - redis-server
+          - python-numpy
 
         apt:
           sources:
@@ -134,6 +135,7 @@ resources:
         write_files:
           - content: |
               #!/bin/sh
+              git clone https://github.com/xscanpix/ACC-11.git
               # Configure rabbitmq
               rabbitmqctl add_user rabbit rabbit
               rabbitmqctl set_permissions -p / rabbit ".*" ".*" ".*"
@@ -142,7 +144,6 @@ resources:
               cat ./ACC-11/project/application/app/config/redis.conf > /etc/redis/redis.conf
               service redis-server restart
               # Setup project
-              git clone https://github.com/xscanpix/ACC-11.git
               cd ./ACC-11/project/application/app
               flask run --host=0.0.0.0 &
             path: /home/ubuntu/run_webserver.sh
@@ -153,6 +154,9 @@ resources:
           - pip install --upgrade pip
           - pip install celery
           - pip install flask
+          - pip install python-dotenv
+          - pip install numpy
+          - pip install redis
           - sh /home/ubuntu/run_webserver.sh
 
   workernode_server:
