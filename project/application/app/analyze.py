@@ -41,7 +41,3 @@ def result():
 
     plot(lift_drag_ratios, angles)
         
-        
-
-result()
-#plot_drag_lift(0)
